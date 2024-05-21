@@ -8,9 +8,11 @@ const courseRoute = require("./routes").course;
 const passport = require("passport");
 require("./config/passport")(passport); //將passport套件傳遞給config/passport.js
 const cors = require("cors");
+const port = process.env.PORT || 8080; //部署後PORT會是動態變動的
+// const path = require("path"); //跟路徑有關的套件
 
 mongoose
-  .connect("mongodb://localhost:27017/mernDB")
+  .connect(process.env.MONGODB_CONNECTION)
   .then(() => {
     console.log("Connencting MongoDB...");
   })
@@ -21,18 +23,27 @@ mongoose
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+// app.use(express.static(path.join(__dirname, "client", "build")));
+
 app.use("/api/user", authRoute);
 
-//該route的request header必須有JWT才可進入
 app.use(
-  "/api/courses",
+  //該route的request header必須有JWT才可進入
+  "/api/courses", //只有登入系統(擁有JWT Token)的人，才能新增或註冊課程
   passport.authenticate("jwt", { session: false }), //會取用/config/passport.js裡面的JwtStrategy
   courseRoute
 );
 
-//只有登入系統(擁有JWT Token)的人，才能新增或註冊課程
-
+// if (
+//   process.env.NODE_ENV === "production" || //成功部署網站後，網站會自動設定此變數為production或是staging
+//   process.env.NODE_ENV === "staging"
+// ) {
+//   app.get("*", (req, res) => {
+//     //若輸入的網址是/...會導向到下面的route
+//     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+//   });
+// }
 //3000是react預設的port
-app.listen(8080, () => {
+app.listen(port, () => {
   console.log("Server is listening port8080");
 });
