@@ -34,15 +34,6 @@ app.use(
   courseRoute
 );
 
-// if (
-//   process.env.NODE_ENV === "production" || //成功部署網站後，網站會自動設定此變數為production或是staging
-//   process.env.NODE_ENV === "staging"
-// ) {
-//   app.get("*", (req, res) => {
-//     //若輸入的網址是/...會導向到下面的route
-//     res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-//   });
-// }
 //3000是react預設的port
 app.listen(port, () => {
   console.log("Server is listening port8080");

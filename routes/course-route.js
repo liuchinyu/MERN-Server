@@ -2,6 +2,7 @@ const { equal } = require("joi");
 
 const route = require("express").Router();
 const Course = require("../models/").course;
+const User = require("../models").user;
 const courseValidation = require("../validation").courseValidation;
 
 route.use((req, res, next) => {
@@ -66,6 +67,24 @@ route.get("/findByName/:name", async (req, res) => {
   }
 });
 
+//透過課程id查詢修課學生
+route.get("/foundStudent/:_id", async (req, res) => {
+  let { _id } = req.params;
+  console.log("123");
+  try {
+    let foundCourse = await Course.findOne({ _id }).exec();
+    let studentPromises = foundCourse.students.map(async (studentId) => {
+      let foundStudent = await User.findOne({ _id: studentId });
+      return foundStudent.username;
+    });
+    console.log(studentPromises);
+    let students = await Promise.all(studentPromises); //透過Promise.all將有修課的學生都列出來後再return
+    return res.send(students);
+  } catch (e) {
+    return res.status(500).send("查無此課程");
+  }
+});
+
 //新增課程
 route.post("/", async (req, res) => {
   let { error } = courseValidation(req.body);
@@ -97,6 +116,10 @@ route.post("/enroll/:_id", async (req, res) => {
   let { _id } = req.params;
   try {
     let course = await Course.findOne({ _id }).exec();
+    console.log("cour", course);
+    if (course.students.includes(req.user.id)) {
+      return res.status(500).send("您已經註冊過此課程囉");
+    }
     course.students.push(req.user._id); //因此route為登入過後才可連接的route，可透過先前設定的req.user
     await course.save();
     return res.send("註冊完成");
