@@ -116,7 +116,7 @@ route.post("/enroll/:_id", async (req, res) => {
   let { _id } = req.params;
   try {
     let course = await Course.findOne({ _id }).exec();
-    console.log("cour", course);
+    // console.log("cour", course);
     if (course.students.includes(req.user.id)) {
       return res.status(500).send("您已經註冊過此課程囉");
     }

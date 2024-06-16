@@ -9,7 +9,6 @@ const passport = require("passport");
 require("./config/passport")(passport); //將passport套件傳遞給config/passport.js
 const cors = require("cors");
 const port = process.env.PORT || 8080; //部署後PORT會是動態變動的
-// const path = require("path"); //跟路徑有關的套件
 
 mongoose
   .connect(process.env.MONGODB_CONNECTION)
@@ -38,3 +37,5 @@ app.use(
 app.listen(port, () => {
   console.log("Server is listening port8080");
 });
+
+module.exports = app;
