@@ -1,4 +1,4 @@
-網站:https://mern-client-lmej.onrender.com/
+網站:https://coursemanagement-client.web.app/
 # 課程管理系統
 允許使用者創建學生和講師身分:允許教師創建、發佈課程；學生可以報名課程，查看課程訊息。
 
@@ -20,4 +20,4 @@
 
 -使用mocha搭配supertest進行單元測試，確保資料修改的正確性。
 
--使用雲端服務PAAS平台(Render)部署網站。
+-使用GCP App Engine搭配Firebase部署。
